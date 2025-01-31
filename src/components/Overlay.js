@@ -9,6 +9,7 @@ export default function Overlay({ isOpen, onClose, children, result }) {
         }
     };
 
+
     return (
         <div
             id="overlay-backdrop"

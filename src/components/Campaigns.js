@@ -17,7 +17,7 @@ function CampaignResultCard({ id, campaignname, created_at }) {
         <div onClick={() => handleNavigate(id)} className="bg-gray-50 border border-gray-200 shadow-md rounded-lg hover:shadow-xl transition-shadow duration-300 p-6 flex flex-col justify-between">
             <h5 className="text-primary text-2xl font-bold mb-4">{campaignname}</h5>
             <div>
-                {/* <p>{localTime}</p> */}
+                <p>{localTime}</p>
             </div>
         </div>
     )
@@ -25,15 +25,16 @@ function CampaignResultCard({ id, campaignname, created_at }) {
 
 export default function CampaignResults() {
     const [results, setResults] = useState();
+    const baseUrl = process.env.REACT_APP_API_URL
 
 
     useEffect(() => {
         const handleSearch = async () => {
 
             try {
-                const response = await fetch(`http://localhost:5000/fetch-campaign`);
+                const response = await fetch(`${baseUrl}/extension/fetch-campaign`);
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    throw new Error(`HTTP error! Status: ${response}`);
                 }
                 const data = await response.json();
                 setResults(data);
@@ -50,7 +51,7 @@ export default function CampaignResults() {
         <section id="search-results" className="pt-20 mt-20 text-gray-900">
             <div className="container mx-auto px-4" data-aos="fade-up">
                 <div className="text-center">
-                    <h2 className="text-3xl font-bold mb-6">Campaigns</h2>
+                    <h2 className="text-3xl text-[#fa9939] font-bold mb-6">Campaigns</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {results && results.length > 0 ? (
                             results.map((result, index) => (

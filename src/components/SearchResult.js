@@ -2,11 +2,22 @@ import React, { useState, useEffect } from "react";
 import SearchResultCard from "./SearchComponent";
 import { useParams } from "react-router-dom";
 import { unparse } from "papaparse";
+import { QueueListCampaignOverlay } from "./QueueListCampaignOverlay";
 
 
 export default function SearchResults() {
     const [results, setResults] = useState([]);
     const { id } = useParams();
+    const baseUrl = process.env.REACT_APP_API_URL
+    const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+
+
+    const toggleOverlay = (e) => {
+        // if (e.target.id == "profileOverlay")
+        setIsOverlayOpen(!isOverlayOpen);
+    };
+
+
     // const [query, setQuery] = useState("");
     useEffect(() => {
         const handleSearch = async () => {
@@ -16,7 +27,7 @@ export default function SearchResults() {
             }
             try {
                 try {
-                    const response = await fetch(`http://localhost:5000/fetch-data/${id}`);
+                    const response = await fetch(`${baseUrl}/extension/fetch-data/${id}`);
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
@@ -55,30 +66,6 @@ export default function SearchResults() {
 
     const DownloadCSV = (data) => {
 
-        // const flattenData = (data) => {
-        //     const flattenData = data.map(items=>{
-        //         campaignid: data.campaignid,
-        //         contactemail: data.contactemail || "",
-        //         firstname: data.firstname,
-        //         lastname: data.lastname,
-        //         location: data.location,
-        //         headline: data.headline,
-        //         industryname: data.industryname,
-        //         publicprofileurl: data.publicprofileurl,
-        //         educations: data.educations?.map((edu) => `${edu.degree} (${edu.year})`).join("; "),
-        //         workexperience: data.workexperience?.map((exp) => `${exp.company}: ${exp.role} (${exp.years} years)`).join("; "),
-        //     })
-        //     return {
-
-        //     };
-        // };
-
-        // const downloadCSV = (data) => {
-        // const flatData = flattenData(data);
-
-        // // Create CSV header and rows
-        // const headers = Object.keys(flatData).join(",");
-        // const row = Object.values(flatData).map((value) => `"${value}"`).join(",");
 
         const parsedData = processDataForCSV(data);
         const csvContent = unparse(parsedData);
@@ -93,35 +80,20 @@ export default function SearchResults() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        // };
-        // downloadCSV(data)
-
-        // return <button onClick={downloadCSV}>Download CSV</button>;
     };
 
     return (
         <>
-            {/* <div className="bg-primary flex items-center space-x-4 mt-20">
-                
-                <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Enter your search query"
-                    className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-primary"
-                />
-                
-                <button
-                    onClick={handleSearch}
-                    className="bg-black text-white px-4 py-2 rounded-lg hover:bg-primary-dark"
-                >
-                    Search
-                </button>
-            </div> */}
             <section id="search-results" className="pt-7 mt-20 bg-primary text-gray-900">
                 <div className="container mx-auto px-4" data-aos="fade-up">
                     <div className="relative mb-6">
                         <h2 className="text-3xl font-bold text-center">Search Results</h2>
+                        <button
+                            className="bg-black text-white px-4 py-2 rounded absolute left-0 top-0 transition-transform transform hover:scale-105"
+                            onClick={toggleOverlay}
+                        >
+                            Add All To Queue
+                        </button>
                         <button
                             className="bg-black text-white px-4 py-2 rounded absolute right-0 top-0 transition-transform transform hover:scale-105"
                             onClick={() => DownloadCSV(results)}
@@ -135,10 +107,13 @@ export default function SearchResults() {
                                 <SearchResultCard
                                     key={index}
                                     name={result.firstname + " " + result.lastname}
+                                    firstname={result.firstname}
                                     company={result.workexperience[0]?.companyName}
                                     experience={result.workexperience[0]?.title}
                                     result={result}
                                     number={index}
+                                    user_url={result.publicprofileurl}
+                                    userurn={result.userurn}
                                 />
                             ))
                         ) : (
@@ -147,6 +122,7 @@ export default function SearchResults() {
                     </div>
                 </div>
             </section>
+            <QueueListCampaignOverlay isOpen={isOverlayOpen} campaignId={id} onClose={() => setIsOverlayOpen(false)} />
 
 
         </>
