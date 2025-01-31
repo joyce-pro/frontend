@@ -11,19 +11,12 @@ function Login() {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch(`${baseUrl}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, password }),
-            });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                localStorage.setItem('token', data.token);
+            if (email == "aeschiring@gmail.com" && password == "aesc#123@") {
+                localStorage.setItem('token', "snlkvjskejisjeojeocmc;wm");
                 navigate('/');
             } else {
-                setError(data.message || 'Login failed.');
+                setError('Login failed.');
             }
         } catch (err) {
             setError('An error occurred. Please try again later.');
