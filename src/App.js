@@ -19,7 +19,7 @@ function App() {
         {/* <Header /> */}
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          {/* <Route path="/signup" element={<Signup />} /> */}
 
           {/* <Route path='/' element={}></Route> */}
           <Route path='/' element={<PrivateRoute><CampaignResults /> </PrivateRoute>}></Route>
