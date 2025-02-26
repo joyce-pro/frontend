@@ -18,6 +18,9 @@ export default function Navbar() {
                     <ul className="flex space-x-6">
                         <li className="text-white hover:text-black"><Link to="/" >Campaign</Link></li>
                         <li className="text-white hover:text-black"><Link to="/queue" >Queue</Link></li>
+                        <li className="text-white hover:text-black"><Link to="/connection" >Connection</Link></li>
+                        <li className="text-white hover:text-black"><Link to="/whatsapp" >Whatsapp</Link></li>
+                        <li className="text-white hover:text-black"><Link to="/email" >Email</Link></li>
                     </ul>
                     {/* Logout Button */}
                     <button

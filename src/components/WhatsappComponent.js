@@ -1,21 +1,22 @@
 import React from "react";
 import { Trash2 } from "lucide-react";
 
-export default function QueueSearchResultCard({ number, name, status, userurn, onRemove }) {
+export default function WhatsappSearchResultCard({ number, name, status, usernumber, onRemove }) {
     const baseUrl = process.env.REACT_APP_API_URL;
 
     const handleRemoval = async () => {
         try {
-            console.log(userurn)
-            const url = JSON.stringify(userurn)
-            const response = await fetch(`${baseUrl}/queue/delete/${userurn}`, {
-                method: 'DELETE'
+            const response = await fetch(`${baseUrl}/whatsapp/delete/${usernumber}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
             if (!response.ok) {
                 // console.log
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            onRemove(userurn);
+            onRemove(usernumber);
         } catch (err) {
             console.error(err);
         }

@@ -3,6 +3,9 @@ import SearchResultCard from "./SearchComponent";
 import { useParams } from "react-router-dom";
 import { unparse } from "papaparse";
 import { QueueListCampaignOverlay } from "./QueueListCampaignOverlay";
+import { ConnectionListCampaignOverlay } from "./ConnectionListCampaignOverlay";
+import { WhatsappListCampaignOverlay } from "./WhatsappListCampaign";
+import { EmailListCampaignOverlay } from "./EmailListCampaign";
 
 
 export default function SearchResults() {
@@ -10,6 +13,10 @@ export default function SearchResults() {
     const { id } = useParams();
     const baseUrl = process.env.REACT_APP_API_URL
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+    const [isConnectionOverlayOpen, setIsConnectionOverlayOpen] = useState(false);
+    const [isWhatsappOverlayOpen, setIsWhatsappOverlayOpen] = useState(false);
+    const [isEmailOverlayOpen, setIsEmailOverlayOpen] = useState(false);
+
 
 
     const toggleOverlay = (e) => {
@@ -32,7 +39,6 @@ export default function SearchResults() {
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                     const data = await response.json();
-                    console.log(data);
                     setResults(data);
                 } catch (err) {
                     // setError(err.message);
@@ -88,19 +94,45 @@ export default function SearchResults() {
                 <div className="container mx-auto px-4" data-aos="fade-up">
                     <div className="relative mb-6">
                         <h2 className="text-3xl font-bold text-center">Search Results</h2>
-                        <button
-                            className="bg-black text-white px-4 py-2 rounded absolute left-0 top-0 transition-transform transform hover:scale-105"
-                            onClick={toggleOverlay}
-                        >
-                            Add All To Queue
-                        </button>
-                        <button
-                            className="bg-black text-white px-4 py-2 rounded absolute right-0 top-0 transition-transform transform hover:scale-105"
-                            onClick={() => DownloadCSV(results)}
-                        >
-                            Download CSV data
-                        </button>
+                        <div className="flex justify-between mt-4">
+                            {/* Left Side Buttons */}
+                            <div className="flex space-x-4">
+                                <button
+                                    className="bg-black text-white px-4 py-2 rounded transition-transform transform hover:scale-105"
+                                    onClick={() => setIsOverlayOpen(!isOverlayOpen)}
+                                >
+                                    Add All To Queue
+                                </button>
+                                <button
+                                    className="bg-black text-white px-4 py-2 rounded transition-transform transform hover:scale-105"
+                                    onClick={() => setIsConnectionOverlayOpen(!isConnectionOverlayOpen)}
+                                >
+                                    Add All To Connection Campaign
+                                </button>
+                                <button
+                                    className="bg-black text-white px-4 py-2 rounded transition-transform transform hover:scale-105"
+                                    onClick={() => setIsEmailOverlayOpen(!isEmailOverlayOpen)}
+                                >
+                                    Add All To Email Outreach
+                                </button>
+                                <button
+                                    className="bg-black text-white px-4 py-2 rounded transition-transform transform hover:scale-105"
+                                    onClick={() => setIsWhatsappOverlayOpen(!isWhatsappOverlayOpen)}
+                                >
+                                    Add All To Whatsapp Outreach
+                                </button>
+                            </div>
+
+                            {/* Right Side Button */}
+                            <button
+                                className="bg-black text-white px-4 py-2 rounded transition-transform transform hover:scale-105"
+                                onClick={() => DownloadCSV(results)}
+                            >
+                                Download CSV Data
+                            </button>
+                        </div>
                     </div>
+
                     <div className="grid grid-cols-1 gap-6">
                         {results && results.length > 0 ? (
                             results.map((result, index) => (
@@ -123,7 +155,9 @@ export default function SearchResults() {
                 </div>
             </section>
             <QueueListCampaignOverlay isOpen={isOverlayOpen} campaignId={id} onClose={() => setIsOverlayOpen(false)} />
-
+            <ConnectionListCampaignOverlay isOpen={isConnectionOverlayOpen} campaignId={id} onClose={() => setIsConnectionOverlayOpen(false)} />
+            <WhatsappListCampaignOverlay isOpen={isWhatsappOverlayOpen} campaignId={id} onClose={() => setIsWhatsappOverlayOpen(false)} />
+            <EmailListCampaignOverlay isOpen={isEmailOverlayOpen} campaignId={id} onClose={() => setIsEmailOverlayOpen(false)} />
 
         </>
     );

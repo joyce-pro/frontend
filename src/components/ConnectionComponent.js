@@ -1,21 +1,25 @@
 import React from "react";
 import { Trash2 } from "lucide-react";
 
-export default function QueueSearchResultCard({ number, name, status, userurn, onRemove }) {
+export default function ConnectionSearchResultCard({ number, name, status, userurl, onRemove }) {
     const baseUrl = process.env.REACT_APP_API_URL;
 
     const handleRemoval = async () => {
         try {
-            console.log(userurn)
-            const url = JSON.stringify(userurn)
-            const response = await fetch(`${baseUrl}/queue/delete/${userurn}`, {
-                method: 'DELETE'
+            const response = await fetch(`${baseUrl}/connection/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userurl
+                })
             });
             if (!response.ok) {
                 // console.log
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            onRemove(userurn);
+            onRemove(userurl);
         } catch (err) {
             console.error(err);
         }
