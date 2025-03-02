@@ -4,6 +4,8 @@ import QueueSearchResultCard from "./QueueComponent";
 
 export default function QueueResults() {
     const [results, setResults] = useState([]);
+    const [filteredResults, setFilteredResults] = useState([]);
+    const [filterStatus, setFilterStatus] = useState("all");
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState(""); // Store dynamic popup messages
     const { id } = useParams();
@@ -22,12 +24,21 @@ export default function QueueResults() {
                 }
                 const data = await response.json();
                 setResults(data.queue);
+                setFilteredResults(data.queue);
             } catch (err) {
                 console.log(err);
             }
         };
         handleSearch();
     }, [id]);
+
+    useEffect(() => {
+        if (filterStatus === "all") {
+            setFilteredResults(results);
+        } else {
+            setFilteredResults(results.filter(result => result.accept_status === filterStatus));
+        }
+    }, [filterStatus, results]);
 
     const CheckStatus = async () => {
         try {
@@ -56,20 +67,33 @@ export default function QueueResults() {
         <>
             <section id="search-results" className="pt-7 mt-20 bg-primary text-gray-900 relative">
                 <div className="container mx-auto px-4" data-aos="fade-up">
-                    <div className="relative mb-6">
-                        <h2 className="text-3xl font-bold text-center">Search Results</h2>
-                        <button
-                            className="bg-black text-white px-4 py-2 rounded absolute right-0 top-0 transition-transform transform hover:scale-105"
-                            onClick={CheckStatus}
-                        >
-                            Check Status
-                        </button>
+                    <div className="relative mb-6 flex justify-between items-center">
+                        <h2 className="text-3xl font-bold">Search Results</h2>
+                        <div className="flex gap-4">
+                            <select
+                                className="px-4 py-2 border rounded bg-white text-gray-900"
+                                value={filterStatus}
+                                onChange={(e) => setFilterStatus(e.target.value)}
+                            >
+                                <option value="all">All</option>
+                                <option value="ACCEPTED">Accepted</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="REJECTED">Rejected</option>
+                                <option value="UNRESOLVED">Unresolved</option>
+                            </select>
+                            <button
+                                className="bg-black text-white px-4 py-2 rounded transition-transform transform hover:scale-105"
+                                onClick={CheckStatus}
+                            >
+                                Check Status
+                            </button>
+                        </div>
                     </div>
 
                     {/* Results Grid */}
                     <div className="grid grid-cols-1 gap-6">
-                        {results.length > 0 ? (
-                            results.map((result, index) => (
+                        {filteredResults.length > 0 ? (
+                            filteredResults.map((result, index) => (
                                 <QueueSearchResultCard
                                     key={index}
                                     name={result.username}
