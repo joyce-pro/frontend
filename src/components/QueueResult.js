@@ -78,7 +78,7 @@ export default function QueueResults() {
                                 <option value="all">All</option>
                                 <option value="ACCEPTED">Accepted</option>
                                 <option value="PENDING">Pending</option>
-                                <option value="REJECTED">Rejected</option>
+                                <option value="DECLINED">Declined</option>
                                 <option value="UNRESOLVED">Unresolved</option>
                             </select>
                             <button
